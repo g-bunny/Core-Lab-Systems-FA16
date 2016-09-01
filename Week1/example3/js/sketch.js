@@ -8,6 +8,8 @@ var secStamp = 0; //time tracking part
 var storedSec = 0;
 var graphY; //do this later
 
+var xIncrement = 5;
+
 //SHOULD WE CLEAR LOCALSTORAGE?
 var lsClear = true;
 
@@ -48,7 +50,8 @@ function setup() {
     mic = new p5.AudioIn();
     mic.start();
 
-    createCanvas(8000, 255);
+    //CHANGE THIS!!
+    createCanvas(1800, 255);
 
     text = createP(name);
     text.id("milk");
@@ -64,11 +67,14 @@ function setup() {
         points = unStore(localStorage.storedPoints);
     }
 
+    // xIncrement = 5;
+
 
 }
 
 function draw() {
-	background(255);
+    background(255);
+
     storedTime = timeStamp;
     timeStamp = minute();
 
@@ -87,7 +93,7 @@ function draw() {
     graphY = constrain(height - micLevel * height * 5, 0, height);
 
     points.push({
-        x: millis() / 100,
+        x: millis() * .1,
         y: graphY,
         time: Date.now()
     });
@@ -101,19 +107,36 @@ function draw() {
 
     var p = JSON.parse(localStorage.storedPoints);
 
+    //p = points;
+
     //println(graphY);
     //ellipse(millis() / 100, graphY, 4, 4);
-    for (var i = 1; i < p.length; i++) {
+    var l = p.length;
+    var ptsMax = window.width/xIncrement;
 
-    	var x1 = Math.map(p[i-1].time,p[0].time,p[p.length-1].time,0,1);
-    	x1 = x1*width;
+    for (var i = 1; i < l; i++) {
 
-    	var x2 = Math.map(p[i].time,p[0].time,p[p.length-1].time,0,1);
-    	x2 = x2*width;
+       //var lastPt = p[l - 1];
+
+        var lFromEnd = l-i;
+
+        if (lFromEnd < ptsMax) {
 
 
-        // line(p[i - 1].x, p[i - 1].y, p[i].x, p[i].y);
-        line(x1, p[i - 1].y, x2, p[i].y);
+
+        // if ((l - i) < width / xIncrement) { //(millis()*.1);
+
+            // var x1 = Math.map(p[i - 1].time, p[0].time, p[p.length - 1].time, 0, 1);
+            // x1 = x1 * width;
+
+            // var x2 = Math.map(p[i].time, p[0].time, p[p.length - 1].time, 0, 1);
+            // x2 = x2 * width;
+
+
+            // line(p[i - 1].x, p[i - 1].y, p[i].x, p[i].y);
+            //line(x1, p[i - 1].y, x2, p[i].y);
+            line(xIncrement * (ptsMax - lFromEnd -1), p[i - 1].y, xIncrement * (ptsMax - lFromEnd), p[i].y);
+        }
     }
     // if(points[i-1].y<=50){
     // 	stroke(0);
