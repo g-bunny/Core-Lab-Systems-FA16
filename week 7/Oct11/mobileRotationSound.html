@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+	<title></title>
+
+</head>
+<body>
+<p id="oData">ORIENTATION DATA: </p>
+<p id="mData">MOTION DATA: </p>
+</body>
+<script>
+
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var oscillator = audioCtx.createOscillator();
+var gainNode = audioCtx.createGain();
+var delayNode = audioCtx.createDelay(5.0);
+
+oscillator.connect(delayNode);
+delayNode.connect(gainNode);
+gainNode.connect(audioCtx.destination);
+
+oscillator.type= "square";
+oscillator.frequency.value = 1000;
+oscillator.start(0);
+gainNode.gain.value = 0.1;
+
+//for iOS devices, you will need to tap the screen first to turn audio on
+window.addEventListener('touchstart', function() {
+
+	// create empty buffer
+	var buffer = audioCtx.createBuffer(1, 1, 22050);
+	var source = audioCtx.createBufferSource();
+	source.buffer = buffer;
+
+	// connect to output (your speakers)
+	source.connect(audioCtx.destination);
+
+	// play the file
+	source.noteOn(0);
+
+}, false);
+
+var onOrientationChange = function(data){
+	console.log('NEW DEVICE ORIENTATION DATA!:');
+	console.log(data);
+	
+	var oText = "ORIENTATION DATA: <br />";
+
+	oText += "Alpha (Yaw): " + data.alpha + " <br />";
+	oText += "Beta (Pitch): " + data.beta + " <br />";
+	oText += "Gamma (Roll): " + data.gamma + " <br />";
+	
+	oscillator.frequency.value = (data.alpha/360) * 5000;
+	gainNode.gain.value = .1;
+	// for (var key in data){
+	// 	oText += key + ": " + data[key] + "<br />";
+	// }
+
+	document.getElementById("oData").innerHTML = oText;
+};
+
+//if this browser / device can detect device orientation events...
+if (window.DeviceOrientationEvent){
+
+	//add an event listener that calls the "onOrientationChange" function whenever the device's orientation data changes
+	window.addEventListener('deviceorientation',onOrientationChange,false);
+} else {
+	console.log("ERROR: This browser can't detect orientation events");
+}
+
+//our own function we write that is called every time device motion data updates
+var latestMData;
+
+//var cube.position = latestMData.acceleration
+
+//new THREE.Vector3(latestMData.acceleration.x,latestMData.acceleration.y,latestMData.acceleration.z);
+
+var onDeviceMotion = function(data){
+	console.log(data);
+
+	latestMData = data;
+
+	var mText = "MOTION DATA: <br />";
+
+	var aData = data.acceleration;
+
+	mText += "Acceleration X: " + aData.x + " <br />";
+	mText += "Acceleration Y: " + aData.y + " <br />";
+	mText += "Acceleration Z: " + aData.z + " <br />";
+
+	document.getElementById("mData").innerHTML = mText;
+}
+
+//Setting up our webpage / app to handle pre-existing js/html5 events
+if (window.DeviceMotionEvent){
+	window.addEventListener("devicemotion",onDeviceMotion,false);
+} else {
+	console.log("ERROR: browser can't detect device motion");
+}
+</script>
+</html>

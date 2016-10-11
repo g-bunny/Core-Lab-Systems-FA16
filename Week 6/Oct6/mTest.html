@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+	<title></title>
+
+</head>
+<body>
+<p id="oData">ORIENTATION DATA: </p>
+<p id="mData">MOTION DATA: </p>
+</body>
+<script>
+
+//http://www.bbcollinsworth.com/web/mTest.html
+
+var onOrientationChange = function(data){
+	console.log('NEW DEVICE ORIENTATION DATA!:');
+	console.log(data);
+	
+	var oText = "ORIENTATION DATA: <br />";
+
+	oText += "Alpha (Yaw): " + data.alpha + " <br />";
+	oText += "Beta (Pitch): " + data.beta + " <br />";
+	oText += "Gamma (Roll): " + data.gamma + " <br />";
+	
+	// for (var key in data){
+	// 	oText += key + ": " + data[key] + "<br />";
+	// }
+
+	document.getElementById("oData").innerHTML = oText;
+};
+
+//if this browser / device can detect device orientation events...
+if (window.DeviceOrientationEvent){
+
+	//add an event listener that calls the "onOrientationChange" function whenever the device's orientation data changes
+	window.addEventListener('deviceorientation',onOrientationChange,false);
+} else {
+	console.log("ERROR: This browser can't detect orientation events");
+}
+
+
+//our own function we write that is called every time device motion data updates
+var latestMData;
+
+//var cube.position = latestMData.acceleration
+
+//new THREE.Vector3(latestMData.acceleration.x,latestMData.acceleration.y,latestMData.acceleration.z);
+
+var onDeviceMotion = function(data){
+	console.log(data);
+
+	latestMData = data;
+
+	var mText = "MOTION DATA: <br />";
+
+	var aData = data.acceleration;
+
+	mText += "Acceleration X: " + aData.x + " <br />";
+	mText += "Acceleration Y: " + aData.y + " <br />";
+	mText += "Acceleration Z: " + aData.z + " <br />";
+	
+
+	document.getElementById("mData").innerHTML = mText;
+}
+
+//Setting up our webpage / app to handle pre-existing js/html5 events
+if (window.DeviceMotionEvent){
+	window.addEventListener("devicemotion",onDeviceMotion,false);
+} else {
+	console.log("ERROR: browser can't detect device motion");
+}
+
+
+</script>
+</html>
