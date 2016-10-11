@@ -1,8 +1,10 @@
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+
+//toggle oscillator on/off
 //var oscillator = audioCtx.createOscillator();
 var gainNode = audioCtx.createGain();
-//delay
+//toggle dealy on/off
 var delayNode = audioCtx.createDelay(5.0);
 var htmlAudio= document.querySelector('audio');
 var source = audioCtx.createMediaElementSource(htmlAudio);
