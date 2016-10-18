@@ -1,0 +1,38 @@
+
+video {
+	width: 800px;
+	height: 600px;
+	border: 1px solid #ccc;
+}
+
+.graycale{
+	filter:grayscale(50%);
+}
+
+.sepia{
+	filter: sepia(50%);
+}
+
+.blur{
+	filter: blur(5px);
+}
+
+.brightness{
+	filter: brightness(0.4);
+}
+
+.contrast{
+	filter: contrast( 200%);
+}
+
+.hue-rotate{
+	filter:hue-rotate(90deg);
+}
+
+.saturate{
+	filter: saturate(40%);
+}
+
+.invert{
+	filter: invert(75%);
+}
